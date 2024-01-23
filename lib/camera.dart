@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:elements_detector/httpCaller.dart';
-import 'package:http/http.dart';
 
 class CameraApp extends StatefulWidget with HttpCaller{
   CameraApp({super.key});
@@ -45,14 +44,27 @@ class _CameraAppState extends State<CameraApp> {
   }
 
   Widget buildCameraPreview() {
-  if (!_controller!.value.isInitialized) {
-    return Container();
+    if (!_controller!.value.isInitialized) {
+      return Container();
+    }
+    return AspectRatio(
+      aspectRatio: _controller!.value.aspectRatio,
+      child: CameraPreview(_controller!),
+    );
   }
-  return AspectRatio(
-    aspectRatio: _controller!.value.aspectRatio,
-    child: CameraPreview(_controller!),
-  );
-}
+
+  void takePicture() async {
+    final image = await _controller!.takePicture();
+    
+    final response = await widget.post(
+      url: 'http://192.168.100.19:5000/knn_classifier', 
+      file: image
+    );
+
+    setState(() {
+      category = response;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,31 +77,7 @@ class _CameraAppState extends State<CameraApp> {
           Expanded(child: buildCameraPreview()),
           FloatingActionButton(
             // Provide an onPressed callback.
-            onPressed: () async {
-              // Take the Picture in a try / catch block. If anything goes wrong,
-              // catch the error.
-              try {
-
-                // Attempt to take a picture and then get the location
-                // where the image file is saved.
-                final image = await _controller!.takePicture();
-                
-                final response = await widget.post(
-                  url: 'http://192.168.100.19:5000/knn_classifier', 
-                  file: image
-                );
-
-                print('Here: $response');
-
-                setState(() {
-                  category = response;
-                });
-
-              } catch (e) {
-                // If an error occurs, log the error to the console.
-                print(e);
-              }
-            },
+            onPressed: takePicture,
             child: const Icon(Icons.camera_alt),
           ),
         ],
