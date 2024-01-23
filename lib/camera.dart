@@ -3,7 +3,15 @@ import 'package:camera/camera.dart';
 import 'package:elements_detector/httpCaller.dart';
 
 class CameraApp extends StatefulWidget with HttpCaller{
-  CameraApp({super.key});
+
+  final String ip;
+  final int port;
+  
+  CameraApp({
+    super.key,
+    required this.ip,
+    required this.port
+  });
 
   @override
   State<CameraApp> createState() => _CameraAppState();
@@ -32,9 +40,9 @@ class _CameraAppState extends State<CameraApp> {
   }
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
-    initializeCamera();
+    await initializeCamera();
   }
 
   @override
@@ -57,7 +65,7 @@ class _CameraAppState extends State<CameraApp> {
     final image = await _controller!.takePicture();
     
     final response = await widget.post(
-      url: 'http://192.168.100.19:5000/knn_classifier', 
+      url: 'http://${widget.ip}:${widget.port}/knn_classifier', 
       file: image
     );
 
