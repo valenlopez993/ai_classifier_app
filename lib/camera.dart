@@ -28,7 +28,7 @@ class _CameraAppState extends State<CameraApp> {
     cameras = await availableCameras();
     // Select the first camera from the list
 
-    CameraController controller = CameraController(cameras![0], ResolutionPreset.medium);
+    CameraController controller = CameraController(cameras![0], ResolutionPreset.ultraHigh);
 
     // Initialize the camera controller
     await controller.initialize();
@@ -40,9 +40,9 @@ class _CameraAppState extends State<CameraApp> {
   }
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
-    await initializeCamera();
+    initializeCamera();
   }
 
   @override
@@ -82,7 +82,7 @@ class _CameraAppState extends State<CameraApp> {
       ),
       body: Column(
         children: [
-          Expanded(child: buildCameraPreview()),
+          Expanded(child: _controller != null ? buildCameraPreview() : Container()),
           FloatingActionButton(
             // Provide an onPressed callback.
             onPressed: takePicture,
