@@ -25,6 +25,8 @@ class _CameraAppState extends State<CameraApp> {
   CameraController? _controller;
   List<CameraDescription>? cameras;
 
+  final _cameraAspectRatio = 9/16;
+
   Future<void> initializeCamera() async {
     cameras = await availableCameras();
     // Select the first camera from the list
@@ -35,6 +37,7 @@ class _CameraAppState extends State<CameraApp> {
     await controller.initialize();
 
     controller.setFlashMode(FlashMode.off);
+    controller.setFocusMode(FocusMode.auto);
 
     // Set the camera controller in the state
     setState(() {
@@ -59,7 +62,7 @@ class _CameraAppState extends State<CameraApp> {
       return Container();
     }
     return AspectRatio(
-      aspectRatio: 9/16,
+      aspectRatio: _cameraAspectRatio,
       child: CameraPreview(_controller!),
     );
   }
@@ -118,7 +121,15 @@ class _CameraAppState extends State<CameraApp> {
               Stack(
                 alignment: AlignmentDirectional.bottomCenter,
                 children: [
-                  SizedBox(child: _controller != null ? buildCameraPreview() : Container()),
+                  GestureDetector(
+                    onTapDown: (position) {
+                      _controller!.setFocusMode(FocusMode.locked);
+                      double x = position.localPosition.dx / MediaQuery.of(context).size.width;
+                      double y = position.localPosition.dy / (MediaQuery.of(context).size.width / _cameraAspectRatio);
+                      _controller!.setFocusPoint(Offset(x, y));
+                    },
+                    child: Expanded(child: _controller != null ? buildCameraPreview() : Container())
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 30),
                     child: FloatingActionButton(
@@ -126,8 +137,7 @@ class _CameraAppState extends State<CameraApp> {
                       backgroundColor: Colors.lightBlueAccent,
                       child: const Icon(
                         Icons.camera_alt,
-                        color: Colors.black,
-                        
+                        color: Colors.black
                       ),
                     ),
                   ),

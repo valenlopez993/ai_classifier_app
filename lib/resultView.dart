@@ -27,7 +27,7 @@ class _ResultViewState extends State<ResultView> {
         automaticallyImplyLeading: false,
         title: Center(
           child: Text(
-            'Es un ${widget.category}'.toUpperCase(),
+            widget.category.toUpperCase(),
             style: const TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.bold
