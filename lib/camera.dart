@@ -1,4 +1,5 @@
 import 'package:elements_detector/resultView.dart';
+import 'package:elements_detector/wait_view.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:elements_detector/httpCaller.dart';
@@ -20,6 +21,7 @@ class CameraApp extends StatefulWidget with HttpCaller{
 
 class _CameraAppState extends State<CameraApp> {
   
+  final _pageController = PageController(initialPage: 0, keepPage: true);
   CameraController? _controller;
   List<CameraDescription>? cameras;
 
@@ -57,14 +59,20 @@ class _CameraAppState extends State<CameraApp> {
       return Container();
     }
     return AspectRatio(
-      aspectRatio: _controller!.value.aspectRatio,
+      aspectRatio: 9/16,
       child: CameraPreview(_controller!),
     );
   }
 
   void takePicture() async {
+
+    _pageController.nextPage(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.ease
+    );
+
     final image = await _controller!.takePicture();
-    
+
     final response = await widget.post(
       url: 'http://${widget.ip}:${widget.port}/knn_classifier', 
       file: image
@@ -73,6 +81,10 @@ class _CameraAppState extends State<CameraApp> {
     if (response.containsKey('Error')) {
       SnackBar(
         content: Text('Error: ${response['Error']}'),
+      );
+        _pageController.previousPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.ease
       );
       return;
     }
@@ -86,21 +98,46 @@ class _CameraAppState extends State<CameraApp> {
         )
       )
     );
+
+    _pageController.previousPage(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.ease
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Expanded(child: _controller != null ? buildCameraPreview() : Container()),
-          FloatingActionButton(
-            // Provide an onPressed callback.
-            onPressed: takePicture,
-            child: const Icon(Icons.camera_alt),
+    return PageView(
+      controller: _pageController,
+      children: [
+        Scaffold(
+          backgroundColor: Colors.black,
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Stack(
+                alignment: AlignmentDirectional.bottomCenter,
+                children: [
+                  SizedBox(child: _controller != null ? buildCameraPreview() : Container()),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 30),
+                    child: FloatingActionButton(
+                      onPressed: takePicture,
+                      backgroundColor: Colors.lightBlueAccent,
+                      child: const Icon(
+                        Icons.camera_alt,
+                        color: Colors.black,
+                        
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
           ),
-        ],
-      ),
+        ),
+        const WaitView()
+      ]
     );
   }
 }

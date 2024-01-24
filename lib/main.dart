@@ -7,6 +7,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     home: IpInput(),
   ));
 }
