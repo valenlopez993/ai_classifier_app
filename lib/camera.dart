@@ -1,3 +1,4 @@
+import 'package:elements_detector/resultView.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:elements_detector/httpCaller.dart';
@@ -22,8 +23,6 @@ class _CameraAppState extends State<CameraApp> {
   CameraController? _controller;
   List<CameraDescription>? cameras;
 
-  String category = '';
-
   Future<void> initializeCamera() async {
     cameras = await availableCameras();
     // Select the first camera from the list
@@ -32,6 +31,8 @@ class _CameraAppState extends State<CameraApp> {
 
     // Initialize the camera controller
     await controller.initialize();
+
+    controller.setFlashMode(FlashMode.off);
 
     // Set the camera controller in the state
     setState(() {
@@ -69,17 +70,27 @@ class _CameraAppState extends State<CameraApp> {
       file: image
     );
 
-    setState(() {
-      category = response;
-    });
+    if (response.containsKey('Error')) {
+      SnackBar(
+        content: Text('Error: ${response['Error']}'),
+      );
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ResultView(
+          images: response['images'],
+          category: response['category'].substring(0, response['category'].length - 2)
+        )
+      )
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Center(child: Text(category)),
-      ),
       body: Column(
         children: [
           Expanded(child: _controller != null ? buildCameraPreview() : Container()),

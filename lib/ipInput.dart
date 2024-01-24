@@ -13,7 +13,7 @@ class IpInput extends StatelessWidget {
   void onSubmitPressed(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       // Navigate to the camera screen
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => CameraApp(
