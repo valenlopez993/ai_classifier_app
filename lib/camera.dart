@@ -97,7 +97,8 @@ class _CameraAppState extends State<CameraApp> {
       MaterialPageRoute(
         builder: (context) => ResultView(
           images: response['images'],
-          category: response['category'].substring(0, response['category'].length - 2)
+          category: response['category'],
+          objectLength: response['objectLength'],
         )
       )
     );

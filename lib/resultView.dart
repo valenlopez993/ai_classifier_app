@@ -6,11 +6,13 @@ class ResultView extends StatefulWidget {
 
   final List<String> images; 
   final String category;
+  String? objectLength;
 
-  const ResultView({
+  ResultView({
     super.key,
     required this.images,
-    required this.category
+    required this.category,
+    this.objectLength
     });
 
   @override
@@ -26,12 +28,24 @@ class _ResultViewState extends State<ResultView> {
         backgroundColor: Colors.grey,
         automaticallyImplyLeading: false,
         title: Center(
-          child: Text(
-            widget.category.toUpperCase(),
-            style: const TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold
-            )
+          child: Column(
+            children: [
+              Text(
+                widget.category.toUpperCase(),
+                style: const TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold
+                )
+              ),
+              if (widget.objectLength != null)
+                Text(
+                  'Longitud: ${widget.objectLength}',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold
+                  ),
+                )
+            ],
           )),
       ),
       body: GridView.count(

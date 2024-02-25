@@ -41,13 +41,18 @@ mixin HttpCaller {
 
       List<String> images = [];
       String category = '';
+      String? objectLength;
       for (var file in archive) {
         var filename = file.name;
         String filePath = '${cacheFolder.path}/images/${DateTime.now()}/$filename';
         if (file.isFile) {
-          if (filename.contains('.txt')){
-            const Utf8Decoder decoder = Utf8Decoder();
+          const Utf8Decoder decoder = Utf8Decoder();
+          if (filename.contains('category.txt')){
             category = decoder.convert(file.content);
+          }
+          else if (filename.contains('object_length.txt')){
+            objectLength = decoder.convert(file.content);
+            objectLength = objectLength == 'None' ? null : objectLength;
           }
           else{
             var outFile = File(filePath);
@@ -60,6 +65,7 @@ mixin HttpCaller {
 
       return {
         'category': category,
+        'objectLength': objectLength,
         'images': images
         };
 
