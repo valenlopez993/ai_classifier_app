@@ -1,12 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:elements_detector/camera.dart';
 
-class IpInput extends StatelessWidget {
+class IpInput extends StatefulWidget {
 
+  IpInput({super.key});
+
+  @override
+  State<IpInput> createState() => _IpInputState();
+}
+
+class _IpInputState extends State<IpInput> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController ipTextController = TextEditingController();
+
   final TextEditingController portTextController = TextEditingController();
+
+  final Map<String, String> methods = {
+    'KNN': 'knn_classifier',
+    'K Means': 'kmeans_classifier'
+  };
+
+  String? _selectedItem;
 
   final double paddingSize = 10.0;
 
@@ -17,14 +32,13 @@ class IpInput extends StatelessWidget {
         context,
         MaterialPageRoute(
           builder: (context) => CameraApp(
+            method: methods[_selectedItem]!,
             ip: ipTextController.text,
             port: int.parse(portTextController.text),
             )),
       );
     }
   }
-
-  IpInput({super.key});
 
   String? ipValitation(String? value) {
     if (value == null || value.isEmpty) {
@@ -45,10 +59,35 @@ class IpInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _selectedItem = _selectedItem ?? methods.keys.first;
+
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(10),
+                child: Text('Algoritmo:'),
+              ),
+              DropdownButton<String>(
+                value: _selectedItem,
+                items: methods.keys.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String? value) {
+                  setState(() {
+                    _selectedItem = value!;
+                  });
+                },
+              ),
+            ],
+          ),
           Form(
             key: _formKey,
             child: Column(

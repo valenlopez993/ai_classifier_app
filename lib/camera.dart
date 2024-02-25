@@ -8,9 +8,11 @@ class CameraApp extends StatefulWidget with HttpCaller{
 
   final String ip;
   final int port;
+  final String method;
   
   CameraApp({
     super.key,
+    required this.method,
     required this.ip,
     required this.port
   });
@@ -25,7 +27,7 @@ class _CameraAppState extends State<CameraApp> {
   CameraController? _controller;
   List<CameraDescription>? cameras;
 
-  final _cameraAspectRatio = 9/16;
+  final _cameraAspectRatio = 3/4;
 
   Future<void> initializeCamera() async {
     cameras = await availableCameras();
@@ -58,12 +60,30 @@ class _CameraAppState extends State<CameraApp> {
   }
 
   Widget buildCameraPreview() {
-    if (!_controller!.value.isInitialized) {
-      return Container();
-    }
-    return AspectRatio(
-      aspectRatio: _cameraAspectRatio,
-      child: CameraPreview(_controller!),
+    // if (!_controller!.value.isInitialized) {
+    //   return Container();
+    // }
+    // return AspectRatio(
+    //   aspectRatio: 1/_cameraAspectRatio,
+    //   child: CameraPreview(_controller!),
+    // );
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.width / _cameraAspectRatio,
+      child: ClipRect(
+        child: OverflowBox(
+          alignment: Alignment.center,
+          child: FittedBox(
+            fit: BoxFit.fitWidth,
+            child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: AspectRatio(
+                  aspectRatio: 1/_controller!.value.aspectRatio,
+                  child: CameraPreview(_controller!),
+                )),
+          ),
+        )),
     );
   }
 
@@ -77,7 +97,7 @@ class _CameraAppState extends State<CameraApp> {
     final image = await _controller!.takePicture();
 
     final response = await widget.post(
-      url: 'http://${widget.ip}:${widget.port}/knn_classifier', 
+      url: 'http://${widget.ip}:${widget.port}/${widget.method}', 
       file: image
     );
 
@@ -129,7 +149,7 @@ class _CameraAppState extends State<CameraApp> {
                       double y = position.localPosition.dy / (MediaQuery.of(context).size.width / _cameraAspectRatio);
                       _controller!.setFocusPoint(Offset(x, y));
                     },
-                    child: Expanded(child: _controller != null ? buildCameraPreview() : Container())
+                    child: _controller != null ? buildCameraPreview() : Container()
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 30),
