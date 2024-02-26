@@ -6,9 +6,9 @@ class ResultView extends StatefulWidget {
 
   final List<String> images; 
   final String category;
-  String? objectLength;
+  final String? objectLength;
 
-  ResultView({
+  const ResultView({
     super.key,
     required this.images,
     required this.category,
