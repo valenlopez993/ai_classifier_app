@@ -1,4 +1,4 @@
-import 'package:elements_detector/ipInput.dart';
+import 'package:ai_classifier/ip_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

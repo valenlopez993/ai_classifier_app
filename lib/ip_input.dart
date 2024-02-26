@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:elements_detector/camera.dart';
+import 'package:ai_classifier/camera.dart';
 
 class IpInput extends StatefulWidget {
 

@@ -1,8 +1,8 @@
-import 'package:elements_detector/result_view.dart';
-import 'package:elements_detector/wait_view.dart';
+import 'package:ai_classifier/result_view.dart';
+import 'package:ai_classifier/wait_view.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:elements_detector/http_caller.dart';
+import 'package:ai_classifier/http_caller.dart';
 
 class CameraApp extends StatefulWidget with HttpCaller{
 

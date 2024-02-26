@@ -1,4 +1,4 @@
-package com.example.elements_detector
+package com.example.ai_classifier
 
 import io.flutter.embedding.android.FlutterActivity
 

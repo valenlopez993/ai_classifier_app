@@ -1,4 +1,4 @@
-# elements_detector
+# ai_classifier
 
 A new Flutter project.
 

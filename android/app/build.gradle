@@ -23,7 +23,7 @@ if (flutterVersionName == null) {
 }   
 
 android {
-    namespace "com.example.elements_detector"
+    namespace "com.example.ai_classifier"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion   
 
@@ -42,7 +42,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.elements_detector"
+        applicationId "com.example.ai_classifier"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 21
