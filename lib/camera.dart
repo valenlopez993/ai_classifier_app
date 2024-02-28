@@ -1,4 +1,4 @@
-import 'package:ai_classifier/result_view.dart';
+import 'package:ai_classifier/filters_result_view.dart';
 import 'package:ai_classifier/wait_view.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
@@ -115,8 +115,9 @@ class _CameraAppState extends State<CameraApp> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ResultView(
-          images: response['images'],
+        builder: (context) => FiltersResultView(
+          filterImages: response['filterImages'],
+          plotImages: response['plotImages'],
           category: response['category'],
           objectLength: response['objectLength'],
         )

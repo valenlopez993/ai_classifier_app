@@ -39,7 +39,8 @@ mixin HttpCaller {
       var bytes = file.readAsBytesSync();
       var archive = ZipDecoder().decodeBytes(bytes);
 
-      List<String> images = [];
+      List<String> plotImages = [];
+      List<String> filterImages = [];
       String category = '';
       String? objectLength;
       for (var file in archive) {
@@ -58,7 +59,12 @@ mixin HttpCaller {
             var outFile = File(filePath);
             outFile = await outFile.create(recursive: true);
             await outFile.writeAsBytes(file.content);
-            images.add(outFile.path);
+            if (outFile.path.contains('plot_')) {
+              plotImages.add(outFile.path);
+            }
+            else {
+              filterImages.add(outFile.path);
+            }
           }
         }
       }
@@ -66,7 +72,8 @@ mixin HttpCaller {
       return {
         'category': category,
         'objectLength': objectLength,
-        'images': images
+        'plotImages': plotImages,
+        'filterImages': filterImages
         };
 
     }
